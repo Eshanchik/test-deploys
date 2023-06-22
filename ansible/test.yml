@@ -1,5 +1,5 @@
 - name: Вывод текста на сервере
-  hosts: server
+  hosts: test
   become: true
   tasks:
     - name: Вывести текст
