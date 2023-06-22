@@ -27,29 +27,29 @@ jobs:
           echo "::set-output name=private_key::$(cat ~/.ssh/id_rsa)"
           echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
 
-      - name: Create SSH key in DigitalOcean
-        id: create_ssh_key
+      - name: Intall doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          run: doctl compute ssh-key create my-ssh-key --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
+            token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+
+      - name: Create SSH key in DigitalOcean
+        run: doctl compute ssh-key create my-ssh-key --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
 
       - name: Create Droplet
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
+        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
 
       - name: Get Droplet IP
-        uses: digitalocean/action-doctl@v2
-        id: droplet
-        with:
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
+        run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
 
+      - name: Setup Ansible Inventory
+        run: echo "$INVENTORY_CONTENTS" > inventory.ini
+        env:
+          INVENTORY_CONTENTS: |
+            [web]
+            qwerty ansible_host=${{ steps.droplet.outputs.ip }}
 
       - name: Test
-        run: ansible-playbook -i ansible/inventory.ini ansible/test.yml
+        run: ansible-playbook -i inventory.ini ansible/test.yml
 
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
@@ -84,7 +84,4 @@ jobs:
       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
 
       - name: Destroy Droplet
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          run: doctl compute droplet delete deploy-test --force
+        run: doctl compute droplet delete deploy-test --force
