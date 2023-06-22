@@ -35,9 +35,6 @@ jobs:
       - name: test
         run: doctl projects list
 
-      - name: Switch project
-        run: doctl auth switch --context temporary
-
       - name: Create SSH key in DigitalOcean
         id: create_ssh_key
         run: doctl compute ssh-key create deploys --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header
