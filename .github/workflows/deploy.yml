@@ -28,7 +28,7 @@ jobs:
           echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
 
       - name: Intall doctl
-        uses: digitalocean/action-doctl@v2
+        uses: digitalocean/action-doctl@v3
         with:
             token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
