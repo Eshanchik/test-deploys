@@ -36,7 +36,7 @@ jobs:
         run: doctl version
 
       - name: Create SSH key in DigitalOcean
-        run: doctl compute ssh-key create my-ssh-key --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
+        run: doctl compute ssh-key create id_rsa.pub --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
 
       - name: Create Droplet
         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
