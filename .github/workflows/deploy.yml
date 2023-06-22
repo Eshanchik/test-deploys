@@ -31,14 +31,14 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_TOKEN }}
           command: |
-           compute ssh-key create my-ssh-key --public-key ~/.ssh/id_rsa.pub --format ID --no-header
+           doctl compute ssh-key create my-ssh-key --public-key ~/.ssh/id_rsa.pub --format ID --no-header
 
       - name: Create Droplet
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_TOKEN }}
           command: |
-           compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
+           doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
 
       - name: Get Droplet IP
         id: droplet
