@@ -47,7 +47,8 @@ jobs:
         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
       - name: Get Droplet IP
-        run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
+        id: droplet
+        run: echo "::set-output name=ip::$(doctl compute droplet get deploy-test --format PublicIPv4)"
 
       - name: Setup Ansible Inventory
         run: echo "$INVENTORY_CONTENTS" > inventory.ini
