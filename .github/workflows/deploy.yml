@@ -40,12 +40,10 @@ jobs:
 
       - name: Create SSH key in DigitalOcean
         id: create_ssh_key
-        run: |
-         ssh_key_id=$(doctl compute ssh-key create deploys --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)
-         echo "SSH_KEY_ID=$ssh_key_id" >> $GITHUB_ENV
+        run: doctl compute ssh-key create deploys --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header
 
       - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "$GITHUB_ENV"
+        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs }}"
 
       - name: Get Droplet IP
         run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
