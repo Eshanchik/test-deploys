@@ -32,6 +32,9 @@ jobs:
         with:
             token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
+      - name: test
+        run: doctl version
+
       - name: Create SSH key in DigitalOcean
         run: doctl compute ssh-key create my-ssh-key --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
 
