@@ -50,8 +50,7 @@ jobs:
 
       - name: Create Ansible inventory
         run: |
-          echo "server" > inventory.ini
-          echo "${{ steps.droplet.outputs.ip }}" > inventory.ini
+          echo "server ansible_host=${{ steps.droplet.outputs.ip }}" > inventory.ini
 
       - name: Test
         run: ansible-playbook -i inventory.ini ansible/test.yml
