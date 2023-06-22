@@ -27,18 +27,12 @@ jobs:
 
       - name: Create SSH key in DigitalOcean
         id: create_ssh_key
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          command: |
-           doctl compute ssh-key create my-ssh-key --public-key ~/.ssh/id_rsa.pub --format ID --no-header
+        run: |
+           doctl compute ssh-key create my-ssh-key --public-key ~/.ssh/id_rsa.pub --format ID --no-header --access-token=${{ secrets.DIGITALOCEAN_TOKEN }}
 
       - name: Create Droplet
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          command: |
-           doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
+        run: |
+           doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary --access-token=${{ secrets.DIGITALOCEAN_TOKEN }}
 
       - name: Get Droplet IP
         id: droplet
