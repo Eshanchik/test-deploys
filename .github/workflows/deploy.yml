@@ -56,7 +56,7 @@ jobs:
             test ansible_host=${{ steps.droplet.outputs.ip }}
 
       - name: Test
-        run: ansible-playbook -i ansible/inventory.ini ansible/test.yml
+        run: ansible-playbook -i inventory.ini ansible/test.yml
 
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
