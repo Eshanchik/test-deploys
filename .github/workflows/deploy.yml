@@ -33,7 +33,7 @@ jobs:
             token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
       - name: test
-        run: doctl version
+        run: doctl auth list-contexts
 
       - name: Switch project
         run: doctl auth switch --context temporary
