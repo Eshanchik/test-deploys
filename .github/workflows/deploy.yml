@@ -42,11 +42,11 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_TOKEN }}
           command: |
-           compute droplet create explorer-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
+           compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
 
       - name: Get Droplet IP
         id: droplet
-        run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name prod-explorer-v2-test)"
+        run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
 
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
@@ -84,4 +84,4 @@ jobs:
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          command: compute droplet delete prod-explorer-v2-test --force
+          command: compute droplet delete deploy-test --force
