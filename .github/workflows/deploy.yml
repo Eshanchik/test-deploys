@@ -53,7 +53,7 @@ jobs:
         env:
           INVENTORY_CONTENTS: |
             [web]
-            test ansible_host=${{ steps.droplet.outputs.ip }}
+            servert ansible_host="${{ steps.droplet.outputs.ip }}"
 
       - name: Test
         run: ansible-playbook -i inventory.ini ansible/test.yml
