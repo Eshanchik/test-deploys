@@ -28,19 +28,22 @@ jobs:
           echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
 
       - name: Intall doctl
-        uses: digitalocean/action-doctl@v3
+        uses: digitalocean/action-doctl@v2
         with:
             token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
       - name: test
         run: doctl projects list
+        
+      - name: test
+        run: doctl projects use beab609f-428f-42ce-b5a6-fadfa9d9d7cf
 
       - name: Create SSH key in DigitalOcean
         id: create_ssh_key
         run: doctl compute ssh-key create deploys --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header
 
       - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh_key_id }}" --project-id beab609f-428f-42ce-b5a6-fadfa9d9d7cf
+        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh_key_id }}"
 
       - name: Get Droplet IP
         run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
