@@ -48,6 +48,14 @@ jobs:
         id: droplet
         run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
 
+      - name: Create Ansible inventory
+        run: |
+          echo "[ server ]" > inventory.ini
+          echo "${{ steps.droplet.outputs.ip }}" > inventory.ini
+
+      - name: Deploy common.yml
+        run: ansible-playbook -i inventory.ini ansible/test.yml
+
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
 

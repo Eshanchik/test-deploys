@@ -1,0 +1,6 @@
+- name: Вывод текста на сервере
+  hosts: server
+  become: true
+  tasks:
+    - name: Вывести текст
+      command: echo "Привет, мир!"
