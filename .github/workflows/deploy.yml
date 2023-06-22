@@ -50,10 +50,10 @@ jobs:
 
       - name: Create Ansible inventory
         run: |
-          echo "[ server ]" > inventory.ini
+          echo "server" > inventory.ini
           echo "${{ steps.droplet.outputs.ip }}" > inventory.ini
 
-      - name: Deploy common.yml
+      - name: Test
         run: ansible-playbook -i inventory.ini ansible/test.yml
 
       # - name: Deploy common.yml
