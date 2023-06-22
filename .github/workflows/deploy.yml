@@ -1,0 +1,87 @@
+name: Deployment
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
+
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip3 install -r requirements-molecule.txt
+
+      - name: Generate SSH key pair
+        id: generate_ssh_key
+        run: |
+          ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa
+          echo "::set-output name=private_key::$(cat ~/.ssh/id_rsa)"
+          echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
+
+      - name: Create SSH key in DigitalOcean
+        id: create_ssh_key
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          command: |
+           compute ssh-key create my-ssh-key --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
+
+      - name: Create Droplet
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          command: |
+           compute droplet create explorer-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys ${{ steps.create_ssh_key.outputs.ssh_key_id }} --project temporary
+
+      - name: Get Droplet IP
+        id: droplet
+        run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name prod-explorer-v2-test)"
+
+      # - name: Deploy common.yml
+      #   run: ansible-playbook -i env/prod ansible/common.yml
+
+      # - name: Deploy parity_explorer_v2.yml playbooks
+      #   run: ansible-playbook -i env/prod ansible/parity_explorer_v2.yml
+
+      # - name: Health check
+      #   id: health_check
+      #   run: |
+      #     status="false"
+      #     count=0
+      #     while [[ "$status" != "true" && $count -lt 60 ]]; do
+      #       sleep 60
+      #       response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://${{ steps.droplet.outputs.ip }}:8545)
+      #       result=$(echo "$response" | jq -r '.result')
+      #       if [[ "$result" == "false" ]]; then
+      #         status="true"
+      #       fi
+      #       ((count++))
+      #     done
+
+      # - name: Backup parity fatdb
+      #   run: ansible-playbook -i env/prod ansible/parity_fatdb_backup.yml
+
+      # - name: Deploy explorer 
+      #   run: ansible-playbook -i env/prod ansible/explorer_backend_v2.yml
+
+      # Health check
+
+      # - name: Backup explorer
+      #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
+
+      - name: Destroy Droplet
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          command: compute droplet delete prod-explorer-v2-test --force
