@@ -17,17 +17,13 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
 
-      - name: Install requirements
-        run: |
-          python -m pip install --upgrade pip
-          pip3 install -r requirements-molecule.txt
+      - name: Install Ansible
+        run: pip install ansible
 
       - name: Generate SSH key pair
         id: generate_ssh_key
         run: |
           ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa
-          echo "::set-output name=private_key::$(cat ~/.ssh/id_rsa)"
-          echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
 
       - name: Create SSH key in DigitalOcean
         id: create_ssh_key
@@ -35,7 +31,7 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_TOKEN }}
           command: |
-           compute ssh-key create my-ssh-key --public-key ${{ steps.generate_ssh_key.outputs.public_key }} --format ID --no-header
+           compute ssh-key create my-ssh-key --public-key ~/.ssh/id_rsa.pub --format ID --no-header
 
       - name: Create Droplet
         uses: digitalocean/action-doctl@v2
