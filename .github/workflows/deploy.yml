@@ -43,8 +43,8 @@ jobs:
         run: |
          echo "::set-output name=ssh::$(doctl compute ssh-key create deploys --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)"
 
-      - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
+      # - name: Create Droplet
+      # run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
       - name: Get Droplet 
         run: doctl compute droplet get deploy-test
