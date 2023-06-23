@@ -92,5 +92,5 @@ jobs:
       # - name: Backup explorer
       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
 
-      - name: Destroy Droplet
-        run: doctl compute droplet delete deploy-test --force
+       # - name: Destroy Droplet
+       # run: doctl compute droplet delete deploy-test --force
