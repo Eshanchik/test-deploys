@@ -59,7 +59,10 @@ jobs:
           INVENTORY_CONTENTS: |
             [web]
             qwerty ansible_host=${{ steps.droplet.outputs.ip }}
-
+            
+      - name: Known host
+        run: ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
+            
       - name: Test
         run: ansible-playbook -i inventory.ini ansible/test.yml
 
