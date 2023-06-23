@@ -36,7 +36,7 @@ jobs:
         run: doctl projects list
         
       - name: test
-        run: doctl projects use beab609f-428f-42ce-b5a6-fadfa9d9d7cf
+        run: doctl projects update beab609f-428f-42ce-b5a6-fadfa9d9d7cf --is_default=true
 
       - name: Create SSH key in DigitalOcean
         id: create_ssh_key
