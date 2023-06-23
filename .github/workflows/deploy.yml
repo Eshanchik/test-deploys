@@ -42,16 +42,16 @@ jobs:
         id: create_ssh_key
         run: |
          echo "::set-output name=ssh::$(doctl compute ssh-key create deploys --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)"
+         
+      - name: Create Droplet
+        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
-      # - name: Create Droplet
-      # run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
-
-      - name: Get Droplet 
-        run: doctl compute droplet get deploy-test
+      - name: Wait create Droplet
+        run: sleep 240s
   
       - name: Get Droplet IP
         id: droplet
-        run: echo "::set-output name=ip::$(doctl compute droplet get deploy-test --format PublicIPv4)"
+        run: echo "::set-output name=ip::$(doctl compute droplet list --no-header --format IP --tag-name deploy-test)"
 
       - name: Setup Ansible Inventory
         run: echo "$INVENTORY_CONTENTS" > inventory.ini
@@ -95,5 +95,8 @@ jobs:
       # - name: Backup explorer
       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
 
-       # - name: Destroy Droplet
-       # run: doctl compute droplet delete deploy-test --force
+      - name: Rm ssh keys
+        run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}"
+
+      - name: Destroy Droplet
+        run: doctl compute droplet delete deploy-test --force
