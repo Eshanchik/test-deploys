@@ -1,5 +1,5 @@
 - name: Вывод текста на сервере
-  hosts: "{{ extra_host | default('tree') }}"
+  hosts: "{{ extra_host | default('qwerty') }}"
   become: true
 
   tasks:
