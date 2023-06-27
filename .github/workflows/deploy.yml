@@ -63,7 +63,7 @@ jobs:
         run: ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
             
       - name: Test
-        run: ansible-playbook -i inventory.ini ansible/test.yml --user root 
+        run: ansible-playbook -i inventory.ini ansible/test.yml -e "extra_host=qwerty" --user root 
 
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
