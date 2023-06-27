@@ -46,7 +46,7 @@ jobs:
         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
       - name: Wait create Droplet
-        run: sleep 120s
+        run: sleep 40s
   
       - name: Get Droplet IP
         id: droplet
