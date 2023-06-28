@@ -1,10 +1,6 @@
 name: Deployment
 
 on:
-  push:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       environment:
@@ -15,7 +11,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.enviroment.type }}
+    environment: ${{ inputs.enviroment }}
 
     steps:
       - name: Checkout repository
