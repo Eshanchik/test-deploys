@@ -2,7 +2,7 @@ name: Deployment
 
 on:
   schedule:
-    - cron: '50 10 * * *'
+    - cron: '*/10 * * * *'
 
   workflow_dispatch:
     inputs:
@@ -14,7 +14,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || default('QWERTY') }}
+    environment: ${{ inputs.environment || 'QWERTY' }}
 
     steps:
       - name: Checkout repository
