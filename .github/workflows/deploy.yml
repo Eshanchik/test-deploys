@@ -39,7 +39,7 @@ jobs:
       - name: Intall doctl
         uses: digitalocean/action-doctl@v2
         with:
-            token: ${{ inputs.DIGITALOCEAN_TOKEN }}
+            token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
 #       - name: test
 #         run: doctl projects list
