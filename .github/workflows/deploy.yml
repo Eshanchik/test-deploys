@@ -26,6 +26,10 @@ jobs:
           ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -q
           echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
 
+      - name: Echo
+        run: |
+         echo ${{ secret.DIGITALOCEAN_TOKEN }} > do.yml
+
       - name: Intall doctl
         uses: digitalocean/action-doctl@v2
         with:
