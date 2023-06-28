@@ -19,61 +19,61 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: setup python
-        uses: actions/setup-python@v2
+#       - name: setup python
+#         uses: actions/setup-python@v2
 
-      - name: Install requirements
-        run: pip install ansible
+#       - name: Install requirements
+#         run: pip install ansible
 
-      - name: Generate SSH key pair
-        id: generate_ssh_key
-        run: |
-          ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -q
-          echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
+#       - name: Generate SSH key pair
+#         id: generate_ssh_key
+#         run: |
+#           ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -q
+#           echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
 
-      - name: Echo
-        run: |
-         echo ${{ secrets.HUI }} > do.yml
+#       - name: Echo
+#         run: |
+#          echo ${{ secrets.HUI }} > do.yml
 
       - name: Intall doctl
         uses: digitalocean/action-doctl@v2
         with:
-            token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+            token: ${{ input.DIGITALOCEAN_TOKEN }}
 
-      - name: test
-        run: doctl projects list
+#       - name: test
+#         run: doctl projects list
         
-      - name: test
-        run: doctl projects update beab609f-428f-42ce-b5a6-fadfa9d9d7cf --is_default=true
+#       - name: test
+#         run: doctl projects update beab609f-428f-42ce-b5a6-fadfa9d9d7cf --is_default=true
 
-      - name: Create SSH key in DigitalOcean
-        id: create_ssh_key
-        run: |
-         random_name=$(openssl rand -hex 4)
-         echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)"
+#       - name: Create SSH key in DigitalOcean
+#         id: create_ssh_key
+#         run: |
+#          random_name=$(openssl rand -hex 4)
+#          echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)"
            
-      - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
+#       - name: Create Droplet
+#         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
-      - name: Wait create Droplet
-        run: sleep 40s
+#       - name: Wait create Droplet
+#         run: sleep 40s
   
-      - name: Get Droplet IP
-        id: droplet
-        run: echo "::set-output name=ip::$(doctl compute droplet list deploy-test --format PublicIPv4 --no-header)"
+#       - name: Get Droplet IP
+#         id: droplet
+#         run: echo "::set-output name=ip::$(doctl compute droplet list deploy-test --format PublicIPv4 --no-header)"
 
-      - name: Setup Ansible Inventory
-        run: echo "$INVENTORY_CONTENTS" > inventory.ini
-        env:
-          INVENTORY_CONTENTS: |
-            [web]
-            qwerty ansible_host=${{ steps.droplet.outputs.ip }}
+#       - name: Setup Ansible Inventory
+#         run: echo "$INVENTORY_CONTENTS" > inventory.ini
+#         env:
+#           INVENTORY_CONTENTS: |
+#             [web]
+#             qwerty ansible_host=${{ steps.droplet.outputs.ip }}
             
-      - name: Known host
-        run: ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
+#       - name: Known host
+#         run: ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
             
-      - name: Test
-        run: ansible-playbook -i inventory.ini ansible/test.yml -e "extra_host=qwerty" --user root 
+#       - name: Test
+#         run: ansible-playbook -i inventory.ini ansible/test.yml -e "extra_host=qwerty" --user root 
 
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
@@ -107,8 +107,8 @@ jobs:
       # - name: Backup explorer
       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
 
-      - name: Rm ssh keys
-        run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
+#       - name: Rm ssh keys
+#         run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
 
-      - name: Destroy Droplet
-        run: doctl compute droplet delete deploy-test --force
+#       - name: Destroy Droplet
+#         run: doctl compute droplet delete deploy-test --force
