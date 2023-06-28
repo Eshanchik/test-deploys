@@ -5,6 +5,11 @@ on:
     - cron: '0 3 * * *'
 
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        type: QWERTY
+        required: true
 
 jobs:
   deploy:
@@ -28,7 +33,7 @@ jobs:
 
       - name: Echo
         run: |
-         echo ${{ secrets.DIGITALOCEAN_TOKEN }} > do.yml
+         echo ${{ secrets.HUI }} > do.yml
 
       - name: Intall doctl
         uses: digitalocean/action-doctl@v2
