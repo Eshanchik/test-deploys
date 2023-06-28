@@ -24,6 +24,13 @@ jobs:
       - name: echo
         run: echo ${{ needs.deploy.outputs.environment }}
 
+      - name: echo
+        run: |
+          echo "Environment: $ENVIRONMENT"
+        env: 
+          ENVIRONMENT: ${{ inputs.environment }}
+
+
       - name: env
         run: env
 
