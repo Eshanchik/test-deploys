@@ -15,7 +15,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: QWERTY
+    environment: ${{ inputs.enviroment }}
 
     steps:
       - name: Checkout repository
