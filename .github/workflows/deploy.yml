@@ -11,11 +11,14 @@ on:
         description: 'Environment to run tests against'
         type: environment
         required: true
+        
+env:
+  ENVIRONMENT: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
+    environment: ${{ env.ENVIRONMENT }}
 
     steps:
       - name: Checkout repository
@@ -27,8 +30,6 @@ jobs:
       - name: echo
         run: |
           echo "Environment: $ENVIRONMENT"
-        env: 
-          ENVIRONMENT: ${{ inputs.environment }}
 
 
       - name: env
