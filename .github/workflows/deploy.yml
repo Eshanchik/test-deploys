@@ -12,6 +12,10 @@ on:
         type: environment
         required: true
         
+        
+env: 
+  ENVIRONMENT: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
+          
 jobs:
   deploy:
     runs-on: ubuntu-latest
