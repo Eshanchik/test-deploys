@@ -12,9 +12,6 @@ on:
         type: environment
         required: true
         
-env:
-  ENVIRONMENT: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
-        
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,6 +27,8 @@ jobs:
       - name: echo
         run: |
           echo "Environment: $ENVIRONMENT"
+        env: 
+          ENVIRONMENT: ${{ jobs.deploy.outputs.environment }}
 
 
       - name: env
