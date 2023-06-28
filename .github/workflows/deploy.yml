@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Environment: $ENVIRONMENT"
         env: 
-          ENVIRONMENT: ${{ jobs.deploy.environment }}
+          ENVIRONMENT: ${{ job.deploy.environment }}
 
 
       - name: env
