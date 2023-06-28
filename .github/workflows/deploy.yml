@@ -15,7 +15,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
+    environment: 
+      name: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
 
     steps:
       - name: Checkout repository
