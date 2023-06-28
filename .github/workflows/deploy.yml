@@ -15,7 +15,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.enviroment }}
+    environment: ${{ inputs.enviroment.type }}
 
     steps:
       - name: Checkout repository
