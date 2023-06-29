@@ -142,5 +142,6 @@ jobs:
         if: always()
         run: |
          doctl compute droplet delete deploy-test --force
+         doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
          doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force
 
