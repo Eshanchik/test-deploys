@@ -77,15 +77,20 @@ jobs:
         run: echo "::set-output name=volume::$(doctl compute volume create --region nyc1 --size 100GB)"
            
       - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --volumes volume-id="${{ steps.volume.outputs.volume }}" --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
+        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
       - name: Wait create Droplet
         run: sleep 40s
-  
+        
       - name: Get Droplet IP
         id: droplet
         run: |
          echo "::set-output name=ip::$(doctl compute droplet list deploy-test --format PublicIPv4 --no-header)"
+         echo "::set-output name=id::$(doctl compute droplet list deploy-test --format ID --no-header)"
+
+      - name: attach volume
+        run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
+        
 
       - name: Setup Ansible Inventory
         run: echo "$INVENTORY_CONTENTS" > inventory.ini
