@@ -72,10 +72,6 @@ jobs:
          random_name=$(openssl rand -hex 4)
          echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)"
            
-      - name: Create Volume
-        id: volume
-        run: echo "::set-output name=volume::$(doctl compute volume create --region nyc1 --size 100GB --format ID --no-header)"
-           
       - name: Create Droplet
         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
@@ -88,9 +84,12 @@ jobs:
          echo "::set-output name=ip::$(doctl compute droplet list deploy-test --format PublicIPv4 --no-header)"
          echo "::set-output name=id::$(doctl compute droplet list deploy-test --format ID --no-header)"
 
-      - name: attach volume
-        run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
-        
+      - name: Create Volume
+        id: volume
+        run: doctl compute volume create --region nyc1 --size 100GB --name backup-storage --fs-type ext4 --droplet-ids "${{ steps.droplet.outputs.id  }}"
+
+#       - name: attach volume
+#         run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
 
       - name: Setup Ansible Inventory
         run: echo "$INVENTORY_CONTENTS" > inventory.ini
