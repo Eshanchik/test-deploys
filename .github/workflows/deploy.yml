@@ -41,7 +41,9 @@ jobs:
         run: env
 
       - name: Install requirements
-        run: pip install ansible
+        run: |
+          pip install ansible
+          apt-get install python3-netaddr
 
       - name: Generate SSH key pair
         id: generate_ssh_key
