@@ -86,7 +86,7 @@ jobs:
 
       - name: Create Volume
         id: volume
-        run: doctl compute volume create --region nyc1 --size 100GB --name backup-storage --fs-type ext4 --droplet-ids "${{ steps.droplet.outputs.id  }}"
+        run: doctl compute volume create backup-storage --region nyc1 --size 100GB --fs-type ext4 --droplet-ids "${{ steps.droplet.outputs.id  }}"
 
 #       - name: attach volume
 #         run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
