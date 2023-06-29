@@ -73,7 +73,12 @@ jobs:
          echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ steps.generate_ssh_key.outputs.public_key }}" --format ID --no-header)"
            
       - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
+        run: doctl compute droplet create deploy-test \
+               --image debian-10-x64 \
+               --region nyc1 \
+               --size s-1vcpu-2gb \
+               --volume "name=backup-storage,region=nyc1,size=100GB" \
+               --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
       - name: Wait create Droplet
         run: sleep 40s
@@ -131,4 +136,7 @@ jobs:
 
       - name: Destroy Droplet
         if: always()
-        run: doctl compute droplet delete deploy-test --force
+        run: |
+         doctl compute droplet delete deploy-test --force
+         doctl compute volume delete backup-storage --force
+
