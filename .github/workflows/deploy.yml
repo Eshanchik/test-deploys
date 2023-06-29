@@ -86,10 +86,10 @@ jobs:
 
       - name: Create Volume
         id: volume
-        run: doctl compute volume create backup-storage --region nyc1 --size 100GB --fs-type ext4 --droplet-ids "${{ steps.droplet.outputs.id  }}"
+        run:  echo "::set-output name=volume::$(doctl compute volume create backup-storage --region nyc1 --size 100GB --format ID --no-header)"
 
-#       - name: attach volume
-#         run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
+      - name: attach volume
+        run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
 
       - name: Setup Ansible Inventory
         run: echo "$INVENTORY_CONTENTS" > inventory.ini
