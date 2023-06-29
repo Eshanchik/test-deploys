@@ -77,7 +77,7 @@ jobs:
         run: echo "::set-output name=volume::$(doctl compute volume create --region nyc1 --size 100GB)"
            
       - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --volumes volume-id=${{ steps.volume.outputs.volume }} --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
+        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --volumes volume-id="${{ steps.volume.outputs.volume }}" --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
       - name: Wait create Droplet
         run: sleep 40s
@@ -138,5 +138,5 @@ jobs:
         if: always()
         run: |
          doctl compute droplet delete deploy-test --force
-         doctl compute volume delete backup-storages --force
+         doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force
 
