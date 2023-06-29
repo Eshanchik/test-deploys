@@ -40,9 +40,6 @@ jobs:
       - name: env
         run: env
 
-      - name: setup python
-        uses: actions/setup-python@v2
-
       - name: Install requirements
         run: pip install ansible
 
