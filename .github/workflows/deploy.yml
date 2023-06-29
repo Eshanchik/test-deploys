@@ -43,7 +43,7 @@ jobs:
       - name: Install requirements
         run: |
           pip install ansible
-          apt-get install python3-netaddr
+          apt-get install python3-netaddr -y
 
       - name: Generate SSH key pair
         id: generate_ssh_key
