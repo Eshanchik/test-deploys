@@ -127,7 +127,9 @@ jobs:
       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
 
       - name: Rm ssh keys
+        if: always()
         run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
 
       - name: Destroy Droplet
+        if: always()
         run: doctl compute droplet delete deploy-test --force
