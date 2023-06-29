@@ -90,11 +90,11 @@ jobs:
             [web]
             qwerty ansible_host=${{ steps.droplet.outputs.ip }}
             
-#       - name: Known host
-#         run: ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
+      - name: Known host
+        run: ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
             
       - name: Test
-        run: ansible-playbook -i inventory.ini test.yml -e "extra_host=qwerty" --user root --key-file "~/.ssh/id_rsa"
+        run: ansible-playbook -i inventory.ini test.yml -e "extra_host=qwerty" --user root
 
       # - name: Deploy common.yml
       #   run: ansible-playbook -i env/prod ansible/common.yml
