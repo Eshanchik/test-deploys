@@ -10,6 +10,9 @@ on:
         type: environment
         required: true
         
+defaults:
+  run:
+    working-directory: ansible
         
 env: 
   ENVIRONMENT: ${{ inputs.environment || github.event.schedule=='*/10 * * * *'  && 'QWERTY' || '123' }}
