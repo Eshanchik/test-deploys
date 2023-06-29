@@ -13,9 +13,11 @@
           - unattended-upgrades
         cache_valid_time: 86400
 
-    - name: Запуск контейнера Hello World
-      docker_container:
-        name: hello-world
-        image: hello-world
-        state: started
-        pull: yes
+    - name: List private ip addresses from default vpcs on DO
+      set_fact:
+        private_ips_do: >-
+          {{ ansible_all_ipv4_addresses }}
+
+    - name: debug
+      debug:
+        msg: ${{ private_ips_do }}
