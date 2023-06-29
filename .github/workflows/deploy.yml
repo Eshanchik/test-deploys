@@ -26,6 +26,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      
+      - name: setup python
+        uses: actions/setup-python@v2
         
       - name: echo
         run: echo ${{ needs.deploy.outputs.environment }}
