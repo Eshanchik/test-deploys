@@ -33,7 +33,7 @@ jobs:
           count=0
           while [[ "$status" != "true" && $count -lt 3 ]]; do
             sleep 10
-            echo test
+            echo $count
             ((count++))
           done
 
