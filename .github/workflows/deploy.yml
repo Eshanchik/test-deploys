@@ -147,5 +147,5 @@ jobs:
       - name: Detach and rm volume 
         if: always()
         run: |
-         doctl compute droplet delete deploy-test --force        
+         doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force       
 
