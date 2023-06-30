@@ -36,14 +36,15 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "$TOKEN" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+
         
       - name: test1
         run: |
-          scp -i ~/.ssh/id_rsa root@$PUB_IP:/etc/nginx/site-available/parity parity
+          scp -i  root@$PUB_IP:/etc/nginx/site-available/parity parity
           sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
-          scp -i ~/.ssh/id_rsa new_parity root@$PUB_IP:/etc/nginx/site-available/parity
+          scp -i  new_parity root@$PUB_IP:/etc/nginx/site-available/parity
         env:
           PUB_IP: 134.209.152.184
         
