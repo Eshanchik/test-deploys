@@ -29,13 +29,12 @@ jobs:
   
       - name: test
         run: |
-          status="false"
           for i in {0..5}; do
-            echo $i
-            if [[ $i -eq 3 ]]; then
-              status="true"
-            fi
-            if [[ $status == "true" ]]; then
+            sleep 10
+            response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545)
+            result=$(echo "$response" | jq -r '.result')
+            echo $result
+            if [[ $result == "false" ]]; then
               break
             fi
           done
