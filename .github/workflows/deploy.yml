@@ -141,12 +141,11 @@ jobs:
       - name: Destroy Droplet
         if: always()
         run: |
+         doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id }}"
          doctl compute droplet delete deploy-test --force
         
       - name: Detach and rm volume 
         if: always()
         run: |
-         doctl compute droplet delete deploy-test --force
-         doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id }}"
-        
+         doctl compute droplet delete deploy-test --force        
 
