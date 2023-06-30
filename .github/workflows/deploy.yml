@@ -45,7 +45,7 @@ jobs:
         
       - name: test1
         run: |
-          echo curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545)" >> result.json
+          echo curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 >> result.json
           cat result.json
   
 #       - name: test
