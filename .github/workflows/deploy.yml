@@ -32,12 +32,17 @@ jobs:
           mkdir ~/.ssh
           ssh-keyscan 134.209.152.184 >> ~/.ssh/known_hosts
         
-      - name: id rsa
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "$TOKEN" > ~/.ssh/id_rsa
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.TOKEN }}
+        
+#       - name: id rsa
+#         env:
+#           TOKEN: ${{ secrets.TOKEN }}
+#         run: |
+#           install -m 600 -D /dev/null ~/.ssh/id_rsa
+#           echo "$TOKEN" > ~/.ssh/id_rsa
 
         
       - name: test1
