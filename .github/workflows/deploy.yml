@@ -41,7 +41,8 @@ jobs:
             else
               echo "Iteration: $i, Status: false"
             fi
-        
+           done
+           
 #       - name: test2
 #         shell: bash
 #         run: |
