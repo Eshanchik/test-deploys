@@ -35,6 +35,7 @@ jobs:
       - name: test1
         run: |
           echo ${{ secrets.TOKEN }} > id_rsa
+          chmod 0600 id_rsa
           scp -i id_rsa root@$PUB_IP:/etc/nginx/site-available/parity parity
           sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
           scp -i id_rsa new_parity root@$PUB_IP:/etc/nginx/site-available/parity
