@@ -31,7 +31,7 @@ jobs:
         run: |
           status="false"
           count=0
-          while [[ "$status" != "true" && $count -lt 3 ]]; do
+          while [[ "$status" -ne "true" && $count -lt 3 ]]; do
             sleep 10
             echo test
             ((count++))
