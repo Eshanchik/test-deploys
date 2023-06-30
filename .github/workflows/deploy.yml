@@ -29,6 +29,7 @@ jobs:
         
       - name: test
         run: |
+          mkdir ~/.ssh
           ssh-keyscan 134.209.152.184 >> ~/.ssh/known_hosts
         
       - name: test1
