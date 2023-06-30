@@ -32,7 +32,7 @@ jobs:
           status="false"
           for i in {0..5}; do
             echo $i
-            if [[ i -eq 3 ]]; then
+            if [[ $i -eq 3 ]]; then
               status="true"
             fi
             if [[ status == "true" ]]; then
