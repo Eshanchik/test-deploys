@@ -34,7 +34,7 @@ jobs:
         
       - name: id rsa
         run: |
-          echo ${{ secrets.TOKEN }} > id_rsa
+          echo "${{ secrets.TOKEN }}" > id_rsa
         
       - name: test1
         run: |
