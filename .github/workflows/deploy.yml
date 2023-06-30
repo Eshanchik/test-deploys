@@ -27,66 +27,59 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
-      - name: test
-        run: |
-          mkdir ~/.ssh
-          ssh-keyscan 134.209.152.184 >> ~/.ssh/known_hosts
+#       - name: test
+#         run: |
+#           mkdir ~/.ssh
+#           ssh-keyscan 134.209.152.184 >> ~/.ssh/known_hosts
         
 #       - name: Set up SSH
 #         uses: webfactory/ssh-agent@v0.5.0
 #         with:
 #           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
         
-      - name: id rsa
-        env:
-          TOKEN: ${{ secrets.PRIVATE_KEY }}
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "$TOKEN" > ~/.ssh/id_rsa
+#       - name: id rsa
+#         env:
+#           TOKEN: ${{ secrets.PRIVATE_KEY }}
+#         run: |
+#           install -m 600 -D /dev/null ~/.ssh/id_rsa
+#           echo "$TOKEN" > ~/.ssh/id_rsa
 
         
-      - name: test1
+#       - name: test1
+#         run: |
+#           scp root@$PUB_IP:/etc/nginx/sites-available/parity parity
+#           sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
+#           scp new_parity root@$PUB_IP:/etc/nginx/sites-available/parity
+#           ssh root@$PUB_IP 'systemctl restart nginx'
+#         env:
+#           PUB_IP: 134.209.152.184
+        
+        
+        
+      - name: Test1
         run: |
-          scp root@$PUB_IP:/etc/nginx/sites-available/parity parity
-          sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
-          scp new_parity root@$PUB_IP:/etc/nginx/sites-available/parity
-          ssh root@$PUB_IP 'systemctl restart nginx'
-        env:
-          PUB_IP: 134.209.152.184
-        
-        
-        
-#       - name: Test explorer2
-#         run: |
-#           for i in {0..5}; do
-#             sleep 10
-#             curl -s http://134.209.152.184/v2/info >> response_v2.json
-#             last_block_timestamp=$( cat response_v2.json | jq -r '.data.lastBlock.timestamp')
-#             current_timestamp=$(date +%s)
-#             echo $last_block_timestamp
-#             if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
-#               echo "Iteration: $i, Status: true"
-#               break
-#             else
-#               echo "Iteration: $i, Status: false"
-#             fi
-#            done
+          for i in {0..60}; do
+            sleep 60
+            curl -s http://134.209.152.184/v2/info >> response_v2.json
+            last_block_timestamp=$( cat response_v2.json | jq -r '.data.lastBlock.timestamp')
+            current_timestamp=$(date +%s)
+            if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
+              exit 0
+            fi
+          done
            
-#       - name: test2
-#         shell: bash
-#         run: |
-#           status="false"
-#           count=0
-#           while [[ "$status" != "true" && $count -lt 60 ]]; do
-#             sleep 60
-#             response=(curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545)
-#             result=$(echo "$response" | jq -r '.result')
-#             if [[ "$result" == "false" ]]; then
-#               status="true"
-#             fi
-#             echo "Iteration: $count, Status: $status"
-#             ((count++))
-#           done. 
+      - name: test2
+        run: |
+          for i in {0..60}; do
+            sleep 60
+            curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 >> result.json
+            result=$(cat result.json | jq -r '.result')
+            echo $result
+            if [[ $result == "false" ]]; then
+              exit 0
+            fi
+          done
+
  
   
 #       - name: test
