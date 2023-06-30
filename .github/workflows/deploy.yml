@@ -34,7 +34,7 @@ jobs:
           while [[ "$status" != "true" && $count -lt 3 ]]; do
             sleep 10
             echo $count
-            ((count++))
+            count+=1
           done
 
 #       - name: echo
