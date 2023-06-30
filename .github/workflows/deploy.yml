@@ -35,7 +35,7 @@ jobs:
             if [[ $i -eq 3 ]]; then
               status="true"
             fi
-            if [[ status == "true" ]]; then
+            if [[ $status == "true" ]]; then
               break
             fi
           done
