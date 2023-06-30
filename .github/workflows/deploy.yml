@@ -26,17 +26,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
-      - name: test.sh
-        run: |
-         chmod +x test1.sh
-         ./test1.sh
-        
+  
       - name: test
         run: |
           status="false"
           count=0
-          while [[ "$status" -ne "true" && $count -lt 3 ]]; do
+          while [[ "$status" != "true" && $count -lt 3 ]]; do
             sleep 10
             echo test
             ((count++))
