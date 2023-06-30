@@ -50,6 +50,7 @@ jobs:
           scp root@$PUB_IP:/etc/nginx/sites-available/parity parity
           sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
           scp new_parity root@$PUB_IP:/etc/nginx/sites-available/parity
+          ssh root@$PUB_IP 'systemctl restart nginx'
         env:
           PUB_IP: 134.209.152.184
         
