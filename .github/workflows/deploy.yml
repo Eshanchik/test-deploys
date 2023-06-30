@@ -29,7 +29,7 @@ jobs:
         
       - name: test1
         run: |
-          response=test
+          response={"result": "test"}
           result=$(echo "$response" | jq -r '.result')
           echo $result
   
