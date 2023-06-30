@@ -31,16 +31,22 @@ jobs:
         run: |
           status="false"
           count=0
-          while [[ "$status" != "true" && $count -lt 60 ]]; do
+          while true; do
+            if [[ "$status" == "true" ]]; then
+              break
+            fi
             sleep 60
-            curl -s http://134.209.152.184/v2/info >> response_v2.json
-            last_block_timestamp=$(cat response_v2.json | jq -r '.data.lastBlock.timestamp')
+            response=$(curl -s http://134.209.152.184/v2/info)
+            last_block_timestamp=$(echo "$response" | jq -r '.data.lastBlock.timestamp')
             current_timestamp=$(date +%s)
             if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
               status="true"
             fi
             echo "Iteration: $count, Status: $status"
             ((count++))
+            if [[ "$count" -ge 60 ]]; then
+              break
+            fi
           done
         
 #       - name: test2
