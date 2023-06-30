@@ -34,6 +34,7 @@ jobs:
             curl -s http://134.209.152.184/v2/info >> response_v2.json
             last_block_timestamp=$( cat response_v2.json | jq -r '.data.lastBlock.timestamp')
             current_timestamp=$(date +%s)
+            echo $last_block_timestamp
             if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
               echo "Iteration: $i, Status: true"
               break
