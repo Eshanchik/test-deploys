@@ -35,6 +35,7 @@ jobs:
       - name: id rsa
         run: |
           echo ${{ secrets.TOKEN }} > id_rsa
+          cat id_rsa
           sudo chmod 600 id_rsa
         
       - name: test1
