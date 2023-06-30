@@ -30,11 +30,14 @@ jobs:
       - name: test
         run: |
           status="false"
-          count=0
-          while [[ "$status" != "true" && $count -lt 3 ]]; do
-            sleep 10
-            echo $count
-            count+=1
+          for i in {0..5}; do
+            echo $i
+            if [[ i -eq 3 ]]; then
+              status="true"
+            fi
+            if [[ status == "true" ]]; then
+              break
+            fi
           done
 
 #       - name: echo
