@@ -30,7 +30,7 @@ jobs:
       - name: test1
         run: |
           parity=$(cat parity)
-          new_parity=$(echo "$parity" | sed "s/listen [0-9.]+:/listen 134.209.152.184:/g")
+          new_parity=$(echo "$parity" | sed -E "s/listen [0-9.]+:/listen 134.209.152.184:/g")
           echo $new_parity > parity
           cat parity
         env:
