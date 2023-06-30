@@ -27,6 +27,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
+      - name: curl
+        run: |
+         sudo apt install curl
+         sudo apt install jq
+        
       - name: test
         run: |
           status="false"
