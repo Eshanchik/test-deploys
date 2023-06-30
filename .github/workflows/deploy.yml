@@ -47,7 +47,7 @@ jobs:
         
       - name: test1
         run: |
-          scp root@$PUB_IP:/etc/nginx/site-available/parity parity
+          scp root@$PUB_IP:./etc/nginx/site-available/parity parity
           sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
           scp new_parity root@$PUB_IP:/etc/nginx/site-available/parity
         env:
