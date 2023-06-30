@@ -27,6 +27,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      - name: test
+        run: |
+          ssh-keyscan 134.209.152.184 >> ~/.ssh/known_hosts
+        
       - name: test1
         run: |
           echo ${{ secrets.TOKEN }} > id_rsa
@@ -35,6 +39,8 @@ jobs:
           scp -i id_rsa new_parity root@$PUB_IP:/etc/nginx/site-available/parity
         env:
           PUB_IP: 134.209.152.184
+        
+        
         
 #       - name: Test explorer2
 #         run: |
