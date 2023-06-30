@@ -26,14 +26,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 10
-          
+        
       - name: test1
         run: |
           parity=$(cat parity)
           new_parity=$(echo $parity | sed "s/listen [0-9.]+:/listen 134.209.152.184:/g")
-          echo new_parity > parity
+          echo $new_parity > parity
           cat parity
         env:
           PUB_IP: 134.209.152.184
