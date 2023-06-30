@@ -59,10 +59,10 @@ jobs:
 #             ((count++))
 #           done. 
         
-      - name: test1
-        run: |
-          curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 >> result.json
-          cat result.json | jq -r '.result'
+#       - name: test1
+#         run: |
+#           curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 >> result.json
+#           cat result.json | jq -r '.result'
   
       - name: test
         run: |
