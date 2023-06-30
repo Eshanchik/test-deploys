@@ -37,6 +37,7 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
           echo "$TOKEN" > id_rsa
+          chmod 600 id_rsa
         
       - name: test1
         run: |
