@@ -29,7 +29,7 @@ jobs:
         
       - name: test1
         run: |
-          sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_paity
+          sed -E "s/listen [0-9.]+:/listen $PUB_IP:/g" parity > new_parity
           cat new_parity
         env:
           PUB_IP: 134.209.152.184
