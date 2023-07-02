@@ -70,14 +70,17 @@ jobs:
            
       - name: test2
         run: |
-          for i in {0..60}; do
-            sleep 60
+          status="false"
+          count=0
+          while [[ "$status" != "true" && $count -lt 60 ]]; do
+            sleep 5
             curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://24.144.112.174:8545 >> result.json
             result=$(cat result.json | jq -r '.result')
             echo $result
             if [[ $result == "true" ]]; then
-              exit 0
+              status="true"
             fi
+            ((count++))
           done
 
  
