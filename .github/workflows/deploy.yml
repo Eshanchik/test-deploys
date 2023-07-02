@@ -75,7 +75,7 @@ jobs:
             curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://24.144.112.174:8545 >> result.json
             result=$(cat result.json | jq -r '.result')
             echo $result
-            if [[ $result == "false" ]]; then
+            if [[ $result == "true" ]]; then
               exit 0
             fi
           done
