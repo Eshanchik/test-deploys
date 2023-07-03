@@ -59,14 +59,17 @@ jobs:
       - name: Test1
         run: |
           for i in {0..60}; do
-            sleep 10
-            curl -s http://134.209.152.184/v2/info > response_v2.json
-            last_block_timestamp=$( cat response_v2.json | jq -r '.data.lastBlock.timestamp')
-            echo $last_block_timestamp
-            current_timestamp=$(date +%s)
-            echo $current_timestamp
-            if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
-              break
+            sleep 60
+            response=$(curl -s http://${{ steps.droplet.outputs.ip }}/v2/info)
+            if [ $? -eq 0 ] && [ "$(jq -e 'has("data")' <<< "$response")" == "true" ]; then
+              echo "$response" > response_v2.json
+              last_block_timestamp=$(jq -r '.data.lastBlock.timestamp' response_v2.json)
+              current_timestamp=$(date +%s)
+              if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
+                break
+              fi
+            else
+              echo "Failed to get JSON response, continuing the loop..."
             fi
           done
            
