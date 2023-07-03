@@ -72,7 +72,7 @@ jobs:
         run: |
           status=false
           for i in {0..60}; do
-            sleep 5
+            sleep 30
             curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 >> result.json
             result=$(cat result.json | jq -r '.result')
             echo $result
