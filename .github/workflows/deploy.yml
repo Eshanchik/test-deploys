@@ -43,11 +43,7 @@ jobs:
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "$TOKEN" > ~/.ssh/id_rsa
-
-        
-      - name: echo
-        run: echo $TOKEN
-        
+          echo $TOKEN
         
 #       - name: test1
 #         run: |
