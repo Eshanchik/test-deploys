@@ -45,8 +45,8 @@ jobs:
           echo "$TOKEN" > ~/.ssh/id_rsa
 
         
-#       - name: curl
-#         run: curl $TOKEN
+      - name: echo
+        run: echo $TOKEN
         
         
 #       - name: test1
