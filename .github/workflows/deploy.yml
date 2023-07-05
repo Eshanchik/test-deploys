@@ -53,64 +53,6 @@ jobs:
 #           ssh root@$PUB_IP 'systemctl restart nginx'
 #         env:
 #           PUB_IP: 134.209.152.184
-        
-        
-        
-#       - name: Test1
-#         run: |
-#           for i in {0..60}; do
-#             sleep 10
-#             response=$(curl -s http://134.209.152.184/v2/info)
-#             if [ $? -eq 0 ] && [ "$(jq -e 'has("data")' <<< "$response")" == "true" ]; then
-#               echo "$response" > response_v2.json
-#               last_block_timestamp=$(jq -r '.data.lastBlock.timestamp' response_v2.json)
-#               current_timestamp=$(date +%s)
-#               if [[ "$last_block_timestamp" -gt $((current_timestamp - 300)) ]]; then
-#                 break
-#               fi
-#             else
-#               echo "Failed to get JSON response, continuing the loop..."
-#             fi
-#           done
-           
-#       - name: test2
-#         run: |
-#           status=false
-#           for i in {0..60}; do
-#             sleep 10
-#             curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 > result.json
-#             result=$(cat result.json | jq -r '.result')
-#             echo $result
-#             if [[ $result == "true" ]]; then
-#               status=true
-#               break
-#             fi
-#           done
- 
-  
-#       - name: test
-#         run: |
-#           for i in {0..5}; do
-#             sleep 10
-#             curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://134.209.152.184:8545 >> result.json
-#             result=$(cat result.json | jq -r '.result')
-#             echo $result
-#             if [[ $result == "false" ]]; then
-#               exit 0
-#             elif [[ $result == "true" ]]; then
-#               continue
-#             fi
-#           done
-
-#       - name: echo
-#         run: |
-#           echo "Environment: $ENVIRONMENT"
-#         env: 
-#           ENVIRONMENT: ${{ github.event.inputs.environment }}
-
-
-#       - name: env
-#         run: env
 
       - name: Install requirements
         run: |
@@ -122,18 +64,6 @@ jobs:
         run: |
           echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
           
-#       - name: ewq
-#         run: echo $PUBLIC_KEY
-
-#       - name: Generate SSH key pair
-#         id: generate_ssh_key
-#         run: |
-#           ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -q
-#           echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
-
-# #       - name: Echo
-# #         run: |
-# #          echo ${{ secrets.HUI }} > do.yml
 
       - name: Intall doctl
         uses: digitalocean/action-doctl@v2
@@ -182,61 +112,22 @@ jobs:
             [web]
             qwerty ansible_host=${{ steps.droplet.outputs.ip }}
             
-# #       - name: Status volume
-# #         run: doctl compute droplet list deploy-test
-        
       - name: Test
         run: ansible-playbook -i inventory.ini test.yml -e "extra_host=qwerty" --user root --key-file "~/.ssh/id_rsa"
 
-#       # - name: Deploy common.yml
-#       #   run: ansible-playbook -i env/prod ansible/common.yml
-
-#       # - name: Deploy parity_explorer_v2.yml playbooks
-#       #   run: ansible-playbook -i env/prod ansible/parity_explorer_v2.yml
-
-#       # - name: Health check
-#       #   id: health_check
-#       #   run: |
-#       #     status="false"
-#       #     count=0
-#       #     while [[ "$status" != "true" && $count -lt 60 ]]; do
-#       #       sleep 60
-#       #       response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://${{ steps.droplet.outputs.ip }}:8545)
-#       #       result=$(echo "$response" | jq -r '.result')
-#       #       if [[ "$result" == "false" ]]; then
-#       #         status="true"
-#       #       fi
-#       #       ((count++))
-#       #     done
-
-#       # - name: Backup parity fatdb
-#       #   run: ansible-playbook -i env/prod ansible/parity_fatdb_backup.yml
-
-#       # - name: Deploy explorer 
-#       #   run: ansible-playbook -i env/prod ansible/explorer_backend_v2.yml
-
-#       # Health check
-
-#       # - name: Backup explorer
-#       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
-
       - name: Rm ssh keys
         if: always()
-        run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
+        run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force || true
         
       - name: Destroy Droplet
         if: always()
         run: |
-         doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id }}"
-         doctl compute droplet delete deploy-test --force
+         doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id }}" || true
+         doctl compute droplet delete deploy-test --force || true
         
       - name: Detach and rm volume 
         if: always()
         run: |
-         doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force    
+         doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force || true   
          
-      - name: Rm ssh keys
-        if: always()
-        run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
-             
 
