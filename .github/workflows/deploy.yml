@@ -112,14 +112,18 @@ jobs:
 #       - name: env
 #         run: env
 
-      - name: Install requirements
-        run: |
-          pip install ansible
-          sudo apt-get install -y python3-netaddr 
+#       - name: Install requirements
+#         run: |
+#           pip install ansible
+#           sudo apt-get install -y python3-netaddr 
 
 
       - name: qwe
-        run: yq -r .ssh_users.deployer-gha users.yml
+        run: |
+          echo "PUBLIC_KEY=(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
+          
+      - name: ewq
+        run: echo $PUBLIC_KEY
 
 #       - name: Generate SSH key pair
 #         id: generate_ssh_key
