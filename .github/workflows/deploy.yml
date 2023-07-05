@@ -150,7 +150,7 @@ jobs:
         id: create_ssh_key
         run: |
          random_name=$(openssl rand -hex 4)
-         echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ secrets.PUBLIC_KEY }}" --format ID --no-header)"
+         echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "$PUBLIC_KEY" --format ID --no-header)"
            
       - name: Create Droplet
         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
