@@ -120,7 +120,7 @@ jobs:
 
       - name: qwe
         run: |
-          echo "PUBLIC_KEY=(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
+          echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
           
       - name: ewq
         run: echo $PUBLIC_KEY
