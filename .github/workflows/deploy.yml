@@ -41,6 +41,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.PRIVATE_KEY }}
         run: |
+          echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "$TOKEN" > ~/.ssh/id_rsa
           echo $TOKEN
@@ -58,12 +59,6 @@ jobs:
         run: |
           pip install ansible
           sudo apt-get install -y python3-netaddr 
-
-
-      - name: qwe
-        run: |
-          echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
-          
 
       - name: Intall doctl
         uses: digitalocean/action-doctl@v2
