@@ -117,6 +117,10 @@ jobs:
           pip install ansible
           sudo apt-get install -y python3-netaddr 
 
+
+      - name: qwe
+        run: yq -r .ssh_users.deployer-gha users.yml
+
 #       - name: Generate SSH key pair
 #         id: generate_ssh_key
 #         run: |
@@ -127,103 +131,103 @@ jobs:
 # #         run: |
 # #          echo ${{ secrets.HUI }} > do.yml
 
-      - name: Intall doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-            token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+#       - name: Intall doctl
+#         uses: digitalocean/action-doctl@v2
+#         with:
+#             token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
-      - name: test
-        run: doctl projects list
+#       - name: test
+#         run: doctl projects list
         
-      - name: test
-        run: doctl projects update beab609f-428f-42ce-b5a6-fadfa9d9d7cf --is_default=true
+#       - name: test
+#         run: doctl projects update beab609f-428f-42ce-b5a6-fadfa9d9d7cf --is_default=true
 
-      - name: Create SSH key in DigitalOcean
-        id: create_ssh_key
-        run: |
-         random_name=$(openssl rand -hex 4)
-         echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ secrets.PUBLIC_KEY }}" --format ID --no-header)"
+#       - name: Create SSH key in DigitalOcean
+#         id: create_ssh_key
+#         run: |
+#          random_name=$(openssl rand -hex 4)
+#          echo "::set-output name=ssh::$(doctl compute ssh-key create ${random_name}-ssh-key --public-key "${{ secrets.PUBLIC_KEY }}" --format ID --no-header)"
            
-      - name: Create Droplet
-        run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
+#       - name: Create Droplet
+#         run: doctl compute droplet create deploy-test --image debian-10-x64 --region nyc1 --size s-1vcpu-2gb --ssh-keys "${{ steps.create_ssh_key.outputs.ssh }}"
 
-      - name: Wait create Droplet
-        run: sleep 40s
+#       - name: Wait create Droplet
+#         run: sleep 40s
         
-      - name: Get Droplet IP
-        id: droplet
-        run: |
-         echo "::set-output name=ip::$(doctl compute droplet list deploy-test --format PublicIPv4 --no-header)"
-         echo "::set-output name=id::$(doctl compute droplet list deploy-test --format ID --no-header)"
+#       - name: Get Droplet IP
+#         id: droplet
+#         run: |
+#          echo "::set-output name=ip::$(doctl compute droplet list deploy-test --format PublicIPv4 --no-header)"
+#          echo "::set-output name=id::$(doctl compute droplet list deploy-test --format ID --no-header)"
 
-      - name: Create Volume
-        id: volume
-        run:  echo "::set-output name=volume::$(doctl compute volume create backup-storage --region nyc1 --size 100GB --format ID --no-header)"
+#       - name: Create Volume
+#         id: volume
+#         run:  echo "::set-output name=volume::$(doctl compute volume create backup-storage --region nyc1 --size 100GB --format ID --no-header)"
       
-      - name: test
-        run: |
-          ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
+#       - name: test
+#         run: |
+#           ssh-keyscan ${{ steps.droplet.outputs.ip }} >> ~/.ssh/known_hosts
       
-      - name: attach volume
-        run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
+#       - name: attach volume
+#         run: doctl compute volume-action attach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id  }}"
 
-      - name: Setup Ansible Inventory
-        run: echo "$INVENTORY_CONTENTS" > inventory.ini
-        env:
-          INVENTORY_CONTENTS: |
-            [web]
-            qwerty ansible_host=${{ steps.droplet.outputs.ip }}
+#       - name: Setup Ansible Inventory
+#         run: echo "$INVENTORY_CONTENTS" > inventory.ini
+#         env:
+#           INVENTORY_CONTENTS: |
+#             [web]
+#             qwerty ansible_host=${{ steps.droplet.outputs.ip }}
             
-#       - name: Status volume
-#         run: doctl compute droplet list deploy-test
+# #       - name: Status volume
+# #         run: doctl compute droplet list deploy-test
         
-      - name: Test
-        run: ansible-playbook -i inventory.ini test.yml -e "extra_host=qwerty" --user root --key-file "~/.ssh/id_rsa"
+#       - name: Test
+#         run: ansible-playbook -i inventory.ini test.yml -e "extra_host=qwerty" --user root --key-file "~/.ssh/id_rsa"
 
-      # - name: Deploy common.yml
-      #   run: ansible-playbook -i env/prod ansible/common.yml
+#       # - name: Deploy common.yml
+#       #   run: ansible-playbook -i env/prod ansible/common.yml
 
-      # - name: Deploy parity_explorer_v2.yml playbooks
-      #   run: ansible-playbook -i env/prod ansible/parity_explorer_v2.yml
+#       # - name: Deploy parity_explorer_v2.yml playbooks
+#       #   run: ansible-playbook -i env/prod ansible/parity_explorer_v2.yml
 
-      # - name: Health check
-      #   id: health_check
-      #   run: |
-      #     status="false"
-      #     count=0
-      #     while [[ "$status" != "true" && $count -lt 60 ]]; do
-      #       sleep 60
-      #       response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://${{ steps.droplet.outputs.ip }}:8545)
-      #       result=$(echo "$response" | jq -r '.result')
-      #       if [[ "$result" == "false" ]]; then
-      #         status="true"
-      #       fi
-      #       ((count++))
-      #     done
+#       # - name: Health check
+#       #   id: health_check
+#       #   run: |
+#       #     status="false"
+#       #     count=0
+#       #     while [[ "$status" != "true" && $count -lt 60 ]]; do
+#       #       sleep 60
+#       #       response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"method":"eth_syncing","params":[],"id":1,"jsonrpc":"2.0"}' http://${{ steps.droplet.outputs.ip }}:8545)
+#       #       result=$(echo "$response" | jq -r '.result')
+#       #       if [[ "$result" == "false" ]]; then
+#       #         status="true"
+#       #       fi
+#       #       ((count++))
+#       #     done
 
-      # - name: Backup parity fatdb
-      #   run: ansible-playbook -i env/prod ansible/parity_fatdb_backup.yml
+#       # - name: Backup parity fatdb
+#       #   run: ansible-playbook -i env/prod ansible/parity_fatdb_backup.yml
 
-      # - name: Deploy explorer 
-      #   run: ansible-playbook -i env/prod ansible/explorer_backend_v2.yml
+#       # - name: Deploy explorer 
+#       #   run: ansible-playbook -i env/prod ansible/explorer_backend_v2.yml
 
-      # Health check
+#       # Health check
 
-      # - name: Backup explorer
-      #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
+#       # - name: Backup explorer
+#       #   run: ansible-playbook -i env/prod ansible/explorer_v2_backup.yml
 
-      - name: Rm ssh keys
-        if: always()
-        run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
+#       - name: Rm ssh keys
+#         if: always()
+#         run: doctl compute ssh-key delete "${{ steps.create_ssh_key.outputs.ssh }}" --force
         
-      - name: Destroy Droplet
-        if: always()
-        run: |
-         doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id }}"
-         doctl compute droplet delete deploy-test --force
+#       - name: Destroy Droplet
+#         if: always()
+#         run: |
+#          doctl compute volume-action detach "${{ steps.volume.outputs.volume }}" "${{ steps.droplet.outputs.id }}"
+#          doctl compute droplet delete deploy-test --force
         
-      - name: Detach and rm volume 
-        if: always()
-        run: |
-         doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force       
+#       - name: Detach and rm volume 
+#         if: always()
+#         run: |
+#          doctl compute volume delete "${{ steps.volume.outputs.volume }}" --force       
 
