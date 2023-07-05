@@ -108,7 +108,7 @@ jobs:
             qwerty ansible_host=${{ steps.droplet.outputs.ip }}
             
       - name: Test
-        run: ansible-playbook -i inventory.ini test.yml -e "extra_host=qwerty" --user root --key-file "~/.ssh/id_rsa"
+        run: ansible-playbook -i inventory.ini test.yml -l "qwerty" --user root --key-file "~/.ssh/id_rsa"
 
       - name: Rm ssh keys
         if: always()
