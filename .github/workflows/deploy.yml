@@ -37,14 +37,14 @@ jobs:
 #         with:
 #           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
         
-#       - name: id rsa
-#         env:
-#           TOKEN: ${{ secrets.PRIVATE_KEY }}
-#         run: |
-#           echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
-#           install -m 600 -D /dev/null ~/.ssh/id_rsa
-#           echo "$TOKEN" > ~/.ssh/id_rsa
-#           echo $TOKEN
+      - name: id rsa
+        env:
+          TOKEN: ${{ secrets.PRIVATE_KEY }}
+        run: |
+          echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo ${{ secrets.PRIVATE_KEY }} > ~/.ssh/id_rsa
+          cat ~/.ssh/id_rsa
         
 #       - name: test1
 #         run: |
@@ -55,15 +55,15 @@ jobs:
 #         env:
 #           PUB_IP: 134.209.152.184
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ hashFiles('setup.py') }}-${{ hashFiles('requirements-molecule.txt') }}
+#       - uses: actions/cache@v2
+#         with:
+#           path: ~/.cache/pip
+#           key: ${{ hashFiles('setup.py') }}-${{ hashFiles('requirements-molecule.txt') }}
 
-      - name: Install requirements
-        run: |
-          pip install --upgrade --upgrade-strategy eager -r requirements-molecule.txt
-          sudo apt-get install -y python3-netaddr 
+#       - name: Install requirements
+#         run: |
+#           pip install --upgrade --upgrade-strategy eager -r requirements-molecule.txt
+#           sudo apt-get install -y python3-netaddr 
 
 #       - name: Intall doctl
 #         uses: digitalocean/action-doctl@v2
