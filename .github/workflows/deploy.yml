@@ -55,7 +55,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.cache/pip
-          key: ${{ hashFiles('setup.py') }}-${{ hashFiles('../requirements-molecule.txt') }}
+          key: ${{ hashFiles('requirements-molecule.txt') }}
 
       - name: Install requirements
         run: |
