@@ -38,11 +38,9 @@ jobs:
 #           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
         
       - name: id rsa
-        env:
-          TOKEN: ${{ secrets.PRIVATE_KEY }}
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo ${{ secrets.PRIVATE_KEY }} > ~/.ssh/id_rsa
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
           cat ~/.ssh/id_rsa
         
 #       - name: test1
