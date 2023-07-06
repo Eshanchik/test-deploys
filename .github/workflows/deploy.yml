@@ -41,7 +41,6 @@ jobs:
         env:
           TOKEN: ${{ secrets.PRIVATE_KEY }}
         run: |
-          echo "PUBLIC_KEY=$(yq -r .ssh_users.deployer-gha users.yml)" >> $GITHUB_ENV
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo ${{ secrets.PRIVATE_KEY }} > ~/.ssh/id_rsa
           cat ~/.ssh/id_rsa
